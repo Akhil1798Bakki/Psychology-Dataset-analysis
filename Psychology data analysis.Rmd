@@ -1,0 +1,421 @@
+---
+title: 'Psychology dataset'
+author: "Bakki Akhil"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# The given dataset is about the Psychology of people working in various sectors or companies, in various designations. 
+
+## the business here provided in the dataset gives the designation of all the people with respecitive their age and their performace is compared by providing the ranks
+
+## The Business problem here includes finding the best peroformer or find what are the factors which can include in change in performace of an employee
+
+## if we see in the dataset there are various factors available which being the factors effecting the performance
+
+## The dataset and summary of the dataset is given below. 
+
+```{r}
+
+data1 = read.csv("D:\\Akhil MBA\\MBA 3 Trimester\\Statistical Modeling using R\\psychology data set.csv",stringsAsFactors = TRUE)
+
+str(data1)
+summary(data1)
+#View(data1)
+dim(data1)
+
+
+```
+
+# The Library DataExplorer is used to explore the data and find the missing values pressence in the data with the correlaiton in the data. The code for it is written below
+
+```{r}
+
+library(DataExplorer)
+create_report(data1)
+
+
+```
+
+## From the provided dataset we can check that the factor creative personality is the element which can effect in any place in an industry or organization leading us to creating a problem statement
+
+# The problem statement here includes the null Hypothesis of how does dependent variable Creative personality of an employee varies with respective to all other independent variables like Age, Block to creativity, Innovation sponsering capabilities, social environment, work environment.
+
+## For doing this we have omitted the missing values from the dataset using 'na.omit' 
+## The final data with less missing values are used for further calculations
+
+## The below code is used for removing missing values and stored in data2 which is further used in calculations
+
+```{r}
+
+data2 = na.omit(data1)
+
+str(data2)
+#View(data2)
+summary(data2)
+dim(data2)
+
+
+```
+## The final dataset with removed missing values are used for finding multiple regression. The code for this is given below where caTools library is used for running regression model
+
+```{r}
+
+library(caTools)
+set.seed(2028229)
+
+
+```
+
+# The below code is used to check the regression for the original dataset for computing the null hypothesis between the dependent variable(Creative.Personality) and the independent variables(Age, Block.to.creativity, Innovative.sponsoring.capabilities, Social.Environment, Work.environment). 
+
+```{r}
+reg1 = lm(data2$Creative.Personality~data2$Age+
+            data2$Block.to.creativity+
+            data2$Innovative.sponsoring.capabilities+
+            data2$Social.Environment+
+            data2$Work.environment)
+
+```
+
+## The sunnary of the above regression is  shown below
+
+## Here in the output we can see that 
+
+## The P-value here is less than 0.05 leading to rejecting null hypothesis and accepting Alternate hypothesis, of Creative personality is dependent on changes of Age, Block.to.creativity, Innovative.sponsoring.capabilities, Social.Environment, Work.environment.
+
+## Adjustede R square here specifies that 20.15% of change in creative personality is dependent on all other independent variables
+## Multiple R square here specifies that 21.82% of chage in creative personality is dependent on all other independent variables
+
+## Here in Intersept as p value is less than 0.05 for every one unit increase will lead to there is a degree of change of 49.66 in the Intersept, beta here being 49.66
+
+## Here in Age as p value is greater than 0.05 there is no dependency of age in creative personality and beta here being 0.12
+
+## Here in Block to creativity as p value is less than 0.05 for every one unit increase will lead to there is a degree of change decrease by 0.21 in the Intersept, beta here being -0.21309
+
+## Here in Innovative.sponsoring.capabilities as p value is greater than 0.05 there is no dependency of Innovative.sponsoring.capabilities in creative personality and beta here being 0.05795    
+
+## Here in Social.Environment as p value is greater than 0.05 there is no dependency of Social.Environment in creative personality and beta here being 0.46877    
+
+## Here in Work.environment as p value is less than 0.05 for every one unit increase will lead to there is a degree of change by 1.81325 in the Intersept, beta here being 1.81325    
+
+
+
+```{r}
+
+summary(reg1)
+
+```
+
+## Here below we are spliting the data in 90:10 ratio where the 90% part is used for training and the rest 10% part is used for testing the dataset of data2
+
+```{r}
+
+split1 = sample.split(data2$sno, SplitRatio = 0.90)
+
+datatrain1 = subset(data2, split1==TRUE)
+dim(datatrain1)
+
+datatest1 = subset(data2,split1==FALSE)
+dim(datatest1)
+
+
+```
+
+## Here we care forming multiple regression for training dataset taking dependent variable as Creative.Personality and independent variable are Age, Block.to.creativity, Innovative.sponsoring.capabilities, Social.Environment, Work.environment
+
+```{r}
+
+reg1 = lm(datatrain1$Creative.Personality~datatrain1$Age+
+            datatrain1$Block.to.creativity+
+            datatrain1$Innovative.sponsoring.capabilities+
+            datatrain1$Social.Environment+
+            datatrain1$Work.environment)
+
+
+
+
+
+```
+
+## The below code is used for finding the summary of the regression for the training dataset
+
+## Here in the output we can see that 
+
+## The P-value here is less than 0.05 leading to rejecting null hypothesis and accepting Alternate hypothesis, of Creative personality is dependent on changes of Age, Block.to.creativity, Innovative.sponsoring.capabilities, Social.Environment, Work.environment.
+
+## Adjustede R square here specifies that 21.42% of change in creative personality is dependent on all other independent variables
+
+## Multiple R square here specifies that 23.25% of change in creative personality is dependent on all other independent variables
+
+## Here in Intersept as p value is less than 0.05 for every one unit increase will lead to there is a degree of change of 45.16798 in the Intersept, beta here being 45.16798
+
+## Here in Age as p value is greater than 0.05 there is no dependency of age in creative personality and beta here being 0.08356
+
+## Here in Block to creativity as p value is less than 0.05 for every one unit increase will lead to there is a degree of change decrease by 0.19 in the Intersept, beta here being -0.19709    
+
+## Here in Innovative.sponsoring.capabilities as p value is greater than 0.05 there is no dependency of Innovative.sponsoring.capabilities in creative personality and beta here being 0.08179        
+
+## Here in Social.Environment as p value is greater than 0.05 there is no dependency of Social.Environment in creative personality and beta here being 0.45578        
+
+## Here in Work.environment as p value is less than 0.05 for every one unit increase will lead to there is a degree of change by 1.87247 in the Intersept, beta here being 1.87247        
+
+```{r}
+
+summary(reg1)
+
+```
+
+## The below code is used to plot the multiple regression between dependent and independent variables and shows the graph of Residual vs Fitted, Normal Q-Q, Scale Location, Residual vs Leverage 
+
+```{r}
+
+plot(reg1)
+
+```
+
+## The below code is used to find the outliers using the graph Boxplot and here we got to know that there are 3 outliers in the code and we are removing those outliers from the dataset
+
+```{r}
+
+library(car)
+out1 = Boxplot(reg1$residuals)
+out1
+
+dim(datatrain1)
+datatrain1 = datatrain1[-out1,]
+dim(datatrain1)
+
+```
+
+## Again we are doing regression after we removing the few outliers from the dataset 
+
+```{r}
+
+reg1 = lm(datatrain1$Creative.Personality~datatrain1$Age+
+            datatrain1$Block.to.creativity+
+            datatrain1$Innovative.sponsoring.capabilities+
+            datatrain1$Social.Environment+
+            datatrain1$Work.environment)
+
+
+
+
+
+```
+
+## The below code is used for finding the summary of the regression for the training dataset
+
+## Here in the output we can see that 
+
+## The P-value here is less than 0.05 leading to rejecting null hypothesis and accepting Alternate hypothesis, of Creative personality is dependent on changes of Age, Block.to.creativity, Innovative.sponsoring.capabilities, Social.Environment, Work.environment.
+
+## Adjustede R square here specifies that 28.64% of change in creative personality is dependent on all other independent variables
+
+## Multiple R square here specifies that 30.32% of change in creative personality is dependent on all other independent variables
+
+## Here in Intersept as p value is less than 0.05 for every one unit increase will lead to there is a degree of change of 42.40892 in the Intersept, beta here being 42.40892
+
+## Here in Age as p value is greater than 0.05 there is no dependency of age in creative personality and beta here being 0.17949    
+
+## Here in Block to creativity as p value is less than 0.05 for every one unit increase will lead to there is a degree of change decrease by 0.19631 in the Intersept, beta here being -0.19631        
+
+## Here in Innovative.sponsoring.capabilities as p value is greater than 0.05 there is no dependency of Innovative.sponsoring.capabilities in creative personality and beta here being 0.01472            
+
+## Here in Social.Environment as p value is greater than 0.05 there is no dependency of Social.Environment in creative personality and beta here being 0.47826            
+
+## Here in Work.environment as p value is less than 0.05 for every one unit increase will lead to there is a degree of change by 2.24256 in the Intersept, beta here being 2.24256            
+
+
+```{r}
+
+summary(reg1)
+
+```
+
+## The below code is used to plot the multiple regression between dependent and independent variables and shows the graph of Residual vs Fitted, Normal Q-Q, Scale Location, Residual vs Leverage 
+
+```{r}
+
+plot(reg1)
+
+```
+
+## The below code is used to check Multicolinearity between all the vriables when compared with creative personality as we can see that here the values are greater than 1 this implies that these are linearly dependent 
+
+
+```{r}
+
+# checking multicolinearity
+library(car)
+vif(reg1)
+
+
+```
+
+## The below code is used ofr auto correlation among the regression variables here as the value is greater than zero and less than two this implies that there is positive correlaiton between creative personality and all other independednt variables of Age, Block.to.creativity, Innovative.sponsoring.capabilities, Social.Environment, Work.environment
+
+```{r}
+#auto correlation
+library(lmtest)
+dwtest(reg1)
+
+```
+
+## the below code is to test normality of the given and formed regression model here from the graph we can say that they are normallyty distributed. Even in Shapiro test for the test of value being 0.99117 with the p value of 0.2226 greater than 0,5 says that the data of regression model is normally distributed
+
+```{r}
+
+# check normality of residual 
+qqnorm(reg1$residuals)
+qqline(reg1$residuals)
+
+# test for normality
+# h0 = data is  normally distributed
+# h1 = data is not normally distributed
+# shapiro test is used to test normality
+shapiro.test(reg1$residuals) 
+
+
+```
+
+## Here for identifying the scatterness we use homo and hetro scadisticity, and here p value being less than 0.05 means the data leading to acceptance of alternate hypothesis of being the data of highly scattered 
+
+```{r}
+
+#ho = data is homoscadisticity, means having the same scatter 
+# h1 = data is hetroscadisticity, means unequal scatter
+bptest(reg1) 
+
+
+```
+
+
+## Here the below code is used for finding the variation relaitonship between the rergession indepedednt and dependent variable, this can be find by checking the value of AIC
+
+## The final data here provides the the final possible and best dataset for Backward regression model in annova
+
+## here we have used MASS library to run Anova
+
+```{r}
+
+
+library(MASS)
+
+regmodel = stepAIC(reg1, direction = "backward", trace = 1)
+summary(regmodel)
+regmodel$anova
+
+
+
+
+```
+
+## Here the below code is used for finding the variation relaitonship between the rergession indepedednt and dependent variable, this can be find by checking the value of AIC
+
+## The final data here provides the the final possible and best dataset for Forward regression model in annova
+
+## the final best model suits for finding the relaitonship can be found using anova
+
+```{r}
+
+regmodel = stepAIC(reg1, direction = "forward", trace = 1)
+summary(regmodel)
+regmodel$anova
+
+```
+
+## Here the below code is used for finding relationship using both, forward and backward directions for the dataset in Anova 
+
+## The summary here tells the varaition with degree of fredom and with AIC
+
+## The value of AIC here specifies how much good fit the data is  
+
+## We can consider the dataset of AIC having the low value
+
+```{r}
+
+regmodel = stepAIC(reg1, direction = "both", trace = 1)
+summary(regmodel)
+regmodel$anova
+
+```
+
+## The below code is used to compare between the the prediction between the trained dataset and the tested dataset, the below values shows the relationship between the numbers as the first number being the trained number and the second number being the test number the amount of nearness gives the good fit for the data
+
+```{r}
+
+predict1 = predict(reg1,datatest1)
+
+predict1
+
+str(predict1)
+
+
+
+```
+
+## AIC and BIC are also penalized-likelihood criteria, as we all know. In a given Bayesian setup, BIC is an approximation of a function of the posterior likelihood of a model being valid, with a lower BIC indicating that a model is more likely to be the true model. This shows the output of the likelyness of the dataset as much low the dataset is the better the dataset
+
+```{r}
+
+AIC(reg1)
+BIC(reg1)
+```
+
+
+## From the given dataset and by framing the regression on the dependent variable creative personality we can say that it plays a vital role in Block to creativity and work environment which are the important factors while working in any industry or an organization.
+
+## Here if we observe the dataset even the data is normally distributed from the values through shapiro test and AIC and BIC there can be seen that there is a change in normality and difference in predicted and actual value.
+
+## In terms of Ethics from the dataset we can say that Ethics should be followed in work environment, and in creating new ways of doing works, The company or organization should encourage people in creativity and should be allowed ethically to take a step in creating 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
